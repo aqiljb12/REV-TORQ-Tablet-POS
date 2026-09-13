@@ -1,0 +1,13 @@
+REV TORQ POS Android v0.6.3 FULL
+
+FIXES
+- Restores anon EXECUTE for get_staff_login_email because this RPC is required before Supabase authentication.
+- Keeps sensitive POS/payment/stock/admin RPCs protected for authenticated staff.
+- Adds REV TORQ launcher app icon and round launcher icon.
+- Updates Android versionCode to 63 and versionName to 0.6.3-full.
+- Keeps existing UI/UX and Supabase project configuration.
+- No database reset, table drop, or production data deletion.
+
+IMPORTANT
+Run migration_2026_09_10_fix_login_rpc_permission.sql in the Supabase SQL Editor before testing ID/PIN login.
+The APK must never contain a service-role key.

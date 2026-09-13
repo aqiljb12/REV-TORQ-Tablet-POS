@@ -1,0 +1,8 @@
+REV TORQ POS Android v0.7.6
+- Fix Inventory "Company tidak dijumpai".
+- Add one canonical authenticated context resolver for staff/company/location.
+- Inventory no longer queries before login/session restoration on window load.
+- No hardcoded company/location UUIDs.
+- No database reset/drop/delete.
+- POS/cash drawer production flow retained.
+- Tailwind CDN warning is cosmetic and not the Inventory failure.

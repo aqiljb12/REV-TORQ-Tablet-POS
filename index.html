@@ -753,6 +753,7 @@ body>div[class*="fixed"] .bg-white.rounded-2xl{
                         <div class="rt-pos-top-actions">
                             <div class="rt-status-card"><i data-feather="cloud"></i><div><b>Sync</b><span>Online</span></div></div>
                             <div class="rt-status-card"><i data-feather="printer"></i><div><b>Printer</b><span>Ready</span></div></div>
+                            <button type="button" class="rt-reprint-card" onclick="window.rtOpenPosHistory?.(true)" title="Cari dan print semula resit"><i data-feather="rotate-ccw"></i><div><b>Resit</b><span>Print Semula</span></div></button>
                             <div class="rt-admin-card"><i data-feather="user"></i><div><b>Admin</b><span id="rtPosAdminName">AQIL</span></div></div>
                             <div class="rt-clock-big" id="rtPosClock">22:24<small>19 Ogos 2026</small></div>
                         </div>
@@ -1766,12 +1767,12 @@ body>div[class*="fixed"] .bg-white.rounded-2xl{
                 <div class="p-5 border-b border-slate-200 flex items-center justify-between">
                     <div>
                         <h3 class="text-lg font-black">Sejarah Jualan POS</h3>
-                        <p class="text-xs text-slate-500">Cari invoice dan cetak semula receipt.</p>
+                        <p class="text-xs text-slate-500">Staff POS boleh cari dan print semula resit. VOID kekal Admin sahaja.</p>
                     </div>
                     <button type="button" onclick="window.rtClosePosHistory()" class="w-9 h-9 rounded-xl bg-slate-100 text-slate-500 font-bold">✕</button>
                 </div>
                 <div class="p-4 border-b border-slate-100">
-                    <input id="rtHistorySearch" oninput="window.rtFilterPosHistory()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-indigo-500" placeholder="Cari invoice / nama customer / telefon...">
+                    <input id="rtHistorySearch" oninput="window.rtFilterPosHistory()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-indigo-500" placeholder="Cari invoice / customer / telefon / plate...">
                 </div>
                 <div id="rtHistoryList" class="p-4 overflow-y-auto max-h-[58vh] space-y-2">
                     <div class="text-center py-8 text-slate-400 text-sm">Loading...</div>
@@ -3588,5 +3589,6 @@ window.rtLoadOverride=function(){
 })();
 </script>
 <script src="js/inventory-canonical-list.js?v=38.6.19"></script>
+    <script src="js/receipt-reprint.js?v=0.9.0"></script>
 </body>
 </html>
