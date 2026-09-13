@@ -1,0 +1,36 @@
+REV TORQ V36.4.13 — ACCESS + P&L FIX
+
+1. POS/CASHIER ACCESS
+- POS/cashier roles only see POS.
+- Pomen/mechanic roles see Job Card + Inventory.
+- Admin/Owner retain full ERP navigation.
+- Reports, Money Out, Expenses, Staff, Settings and financial export are blocked from non-admin roles.
+- switchView now rejects unauthorized views instead of relying only on hidden navigation.
+- Removed the old hidden localStorage role-switcher / logo-tap access layer.
+
+2. OVERRIDE MODE
+- Override Mode remains Admin/Owner only.
+- No hidden gesture is required.
+
+3. PROFIT & LOSS
+- Previous calculation was not accounting-correct: it effectively used Sales - Expenses and ignored Cost of Sales.
+- P&L now calculates:
+  Sales
+  - Cost of Sales (COGS)
+  = Gross Profit
+  - Operating Expenses
+  = Net Profit / (Loss)
+- Historical COGS uses stock SALE movements and the unit_cost recorded at the time of sale.
+- Job-card product sales without a stock SALE movement fall back to job_card_items.unit_cost.
+- Service/labour-only invoice lines do not invent a product COGS.
+- If a product sale has no recorded cost source, the report warns that COGS is incomplete.
+
+4. DATABASE COMPATIBILITY
+- invoices.payment_method is never queried.
+- Payment method remains sourced from payments.payment_method.
+
+5. LIVE DATABASE CHECK
+- Current August 2026 sample data checked against Supabase schema.
+- Current sample: Sales RM315.00, historical/fallback COGS RM129.00, Expenses RM0.00, Gross Profit RM186.00, Net Profit RM186.00.
+- Three normal POS invoices use stock SALE unit_cost.
+- Job product invoices use job_card_items.unit_cost where stock SALE rows are absent.

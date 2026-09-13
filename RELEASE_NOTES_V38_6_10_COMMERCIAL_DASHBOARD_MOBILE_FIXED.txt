@@ -1,0 +1,23 @@
+REV TORQ POS V38.6.10
+
+FIX:
+- V38.6.9 still showed the old Monitacc-style dashboard on mobile because
+  monitacc-dashboard.js replaced window.loadDashboard and injected its own UI.
+- V38.6.10 stops that replacement/injection.
+- The canonical commercial dashboard already present in index.html is now used
+  on desktop, tablet and mobile.
+- Existing admin financial/P&L functionality from monitacc-dashboard.js is kept.
+- Existing POS, Job Card, Inventory, Customer, Backend and MPT-II printer code is preserved.
+
+EXPECTED MOBILE:
+Dashboard should show:
+REV TORQ PERFORMANCE banner
+KPI cards
+POS / Job Card / Customer / Inventory / Reports / Settings quick actions
+Recent Sales
+Service Reminders
+Sales Overview
+Workshop Focus
+Quick POS
+Quick Actions
+System Status

@@ -1,0 +1,42 @@
+REV TORQ V36.4.14 — MONITACC-STYLE MOBILE UX + ADMIN FINANCE
+
+UI
+- Mobile-first admin dashboard inspired by the simple Monitacc information hierarchy.
+- Hero: greeting + net profit.
+- Period tabs: Semua / Harian / Mingguan / Bulanan / Tahunan.
+- Four KPI cards: Duit Masuk, Duit Keluar, Baki Tunai, Bil. Rekod.
+- Workshop operational cards: active jobs, customers, low stock.
+- Recent transaction list.
+- Admin Reports now shows real P&L: Sales - COGS - Expenses = Net Profit/Loss.
+- Admin Override/Audit is now a dedicated admin menu item.
+
+ACCOUNTING
+- P&L uses historical stock movement unit_cost for COGS.
+- VOID invoices are excluded from sales and therefore excluded from P&L.
+- Expenses are counted separately from COGS.
+
+SECURITY / SUPABASE
+- Added rt_is_admin() and rt_my_staff_id().
+- Added rt_admin_dashboard(start,end) RPC with server-side admin check.
+- Invoice/payment SELECT is role-scoped: POS staff only see their own transactions; admins see company-wide.
+- Expenses, stock movements, audit logs and override records are admin-only for SELECT.
+- Override inserts are admin-only.
+- No data reset, delete, or migration reset was performed.
+
+POS
+- Existing canonical cash drawer/opening/closing flow retained.
+- Existing POS, Job Card and Inventory workflows retained.
+
+TESTS
+- All JS files passed node --check.
+- Static HTTP smoke test passed for index.html, CSS and new dashboard JS.
+- Supabase migration applied successfully and verified in pg_policies.
+
+
+V36.4.14.1 HOTFIX — ADMIN VOID
+- Fixed PostgreSQL error caused by legacy camelCase voidReason write.
+- Admin VOID now uses atomic Supabase RPC rt_admin_void_invoice.
+- Added invoices.void_reason.
+- VOID restores only stock movements actually posted against the invoice.
+- CASH sales create a CASH_OUT reversal and adjust an open drawer.
+- VOID modal is moved to document.body and no longer requires closing POS history first.

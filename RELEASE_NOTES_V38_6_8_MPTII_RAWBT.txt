@@ -1,0 +1,17 @@
+REV TORQ POS V38.6.8 - MPT-II Android Direct Print
+
+- Android receipt printing can now send real ESC/POS bytes through RawBT.
+- TEST PRINT in Peranti POS uses the same direct route.
+- Auto print selepas checkout uses the direct route when RawBT is available.
+- Browser Print/PDF remains as fallback.
+- This route is Android-only; iOS cannot use the RawBT Android URI scheme.
+
+TEST:
+1. Android: install RawBT.
+2. Pair/configure MPT-II inside RawBT.
+3. REV TORQ > Peranti POS > Sambungan = AUTO or BLUETOOTH.
+4. Press TEST PRINT.
+5. If it prints, checkout Auto Print uses the same route.
+
+NOTE:
+A normal Android Chrome/PWA cannot open a Bluetooth Classic RFCOMM socket itself. RawBT acts as the Android ESC/POS bridge.

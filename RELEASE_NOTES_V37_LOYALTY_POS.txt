@@ -1,0 +1,14 @@
+REV TORQ POS V37 — LOYALTY → POS
+=================================
+- POS now supports loyalty voucher validation and redemption.
+- Staff must select a customer before using a loyalty voucher.
+- Voucher validation uses Supabase RPC: rt_validate_loyalty_voucher.
+- Redemption uses server-side RPC: rt_redeem_loyalty_voucher.
+- Voucher discount replaces manual POS discount while applied (prevents accidental stacking).
+- Voucher is revalidated immediately before checkout.
+- After paid invoice exists, voucher is redeemed against the real invoice UUID.
+- Existing POS stock/payment/void architecture is preserved.
+- No new database/table required for voucher linking; existing loyalty_vouchers RPCs are reused.
+IMPORTANT:
+- This build does not change POS roles/financial visibility.
+- Netlify deployment is NOT required for the Supabase-only broadcast changes already deployed, but this POS UI update does require deploying this ZIP to the POS hosting location.

@@ -1,0 +1,5 @@
+V38.6.12
+- Fixed camera scanner result not remaining in Inventory > Barcode field.
+- Scanned value is stored, applied after scanner teardown, and input/change events are dispatched.
+- Restores pending barcode if inventory modal re-renders.
+- No database schema changes.

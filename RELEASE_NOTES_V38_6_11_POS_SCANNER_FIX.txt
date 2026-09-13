@@ -1,0 +1,26 @@
+REV TORQ POS V38.6.11
+
+FIX:
+- POS screen's "Scan Barcode" button (top bar icon, #rtScanBtnTop) did nothing
+  when tapped. Root cause: addToolbar() in the "revtorq-pos-upgrade" inline
+  script bailed out early because it checked for an existing #rtCatBar
+  element - but #rtCatBar is already present in the static HTML by design,
+  so the toolbar (which creates #rtScanBtn and #rtFavBtn) was never created.
+  The delegated click handler for #rtScanBtnTop looked for #rtScanBtn first
+  (never existed) and then fell back to window.rtOpenPOSScanner, which was
+  also never exposed on window - so both paths silently failed.
+- addToolbar()'s guard no longer checks for #rtCatBar (only for the toolbar
+  itself, so it still only runs once). The duplicate <div id="rtCatBar">
+  that used to be injected alongside it has been removed - there is now only
+  ever one #rtCatBar element, populated by the existing renderCats() /
+  renderEnhanced() logic as before.
+- rtOpenPOSScanner (in the "revtorq-v32-inventory-cashdrawer-fix" block) is
+  now exposed as window.rtOpenPOSScanner, matching what the existing
+  fallback code already expected.
+
+RESULT:
+- Tapping the top-bar Scan Barcode icon now opens the camera scanner modal.
+- The "Kegemaran" (Favourites) toggle button in the POS product toolbar is
+  now created and reachable.
+- No functional or visual change to anything else; #rtCatBar still behaves
+  exactly as before (single element, same classes, same population logic).

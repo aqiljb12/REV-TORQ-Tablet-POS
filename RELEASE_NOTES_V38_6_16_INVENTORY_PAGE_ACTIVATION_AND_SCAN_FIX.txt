@@ -1,0 +1,79 @@
+REV TORQ POS V38.6.15 - Inventory Page Activation + New-Barcode Scan Fix
+
+ROOT CAUSE (found this session):
+index.html's receipt-print function (rtPrintReceipt, inside the
+"revtorq-pos-history-receipt-fix" script block) had this literally inside
+a JS string:
+    ...'</div><script src="js/inventory-page.js?v=38.6.13"></script>
+    </body></html>');
+Browsers end a <script> block on the first literal "</script>" they see in
+the source, even inside a quoted string. That stray tag closed the
+surrounding script block early, which:
+  1) Left the JS string unterminated -> the ENTIRE
+     "revtorq-pos-history-receipt-fix" block failed to parse, silently
+     killing POS invoice history, reprint, void invoice, and the POS
+     customer dropdown (rtOpenPosHistory, rtReprintInvoice,
+     rtAskVoidInvoice/rtConfirmVoidInvoice, rtLoadPosCustomers, rtIsAdmin,
+     rtPrintReceipt were never exposed on window).
+  2) Meant js/inventory-page.js - the controller for the V38.6.13/14
+     dedicated full-page "Tambah/Kemaskini Inventori" screen - never
+     actually loaded in the app (it only "loaded" inside the receipt
+     popup window, where it has nothing to attach to). Inventory
+     add/edit was silently falling back to the old small modal instead
+     of the full page that was already styled to match the Dashboard
+     look (css/app.css already had the matching rt-inv-page-* rules -
+     they just never had anything to apply to).
+
+FIXES:
+- Removed the stray <script> tag from the receipt-print HTML string.
+- Added a proper <script src="js/inventory-page.js?v=38.6.15"></script>
+  tag at the end of <body>, after every script that touches
+  openNewInventory/editInventory, so the dedicated page now activates
+  correctly and matches the Dashboard visual language.
+- js/stable-fixes.js: inventoryBarcodeLookup() only handled the
+  "barcode already exists" case (opens Stock Adjustment) and threw
+  "Barcode tidak dijumpai" for anything else - which is exactly what
+  happens when you scan a NEW item that isn't registered yet. Restored
+  the original intended behaviour: unknown barcode now opens
+  "Tambah Inventori Baru" with the scanned code pre-filled into
+  Barcode, so scanning a new part actually gets it into the system
+  instead of just erroring out.
+- js/stable-fixes.js: saveInventory() closed only the old modal
+  (closeModal('inventoryModal')) on success. Now that the dedicated
+  page is active, it calls closeInventoryPage() when available (falls
+  back to the old behaviour otherwise) so saving an item correctly
+  returns you to the Inventory list instead of leaving you on an
+  empty page.
+
+DATABASE / SUPABASE:
+No schema or RPC changes. All three fixes are front-end only.
+
+V38.6.16 FOLLOW-UP FIX (SAME SESSION):
+After activating the dedicated page above, tapping "Tambah Item" made the
+whole screen go blank/white. Root cause: #view-inventory-form (and
+#view-tutorial) were positioned in the HTML OUTSIDE #viewsContainer /
+#appContainer - i.e. outside the app's actual layout box entirely -
+instead of being a proper sibling of #view-dashboard, #view-inventory,
+etc. inside it. So when it was "shown", the main content box
+(#viewsContainer) correctly had nothing left visible inside it (blank),
+while the real form content rendered off-screen below the whole app
+shell where nobody could see it. Confirmed with an automated
+before/after layout test (view content location: outside viewport vs.
+correctly inside #viewsContainer at the sidebar's edge).
+FIX: moved both #view-inventory-form and #view-tutorial to be real
+children of #viewsContainer, in the same place every other view lives.
+No JS logic changed for this part - purely a DOM placement fix.
+
+TEST:
+1. Inventori > Tambah Item -> should open as a full page styled like
+   the Dashboard (eyebrow label, big heading, back button), not a
+   small popup.
+2. On that page, tap SCAN next to Barcode and scan a part that is NOT
+   yet in the system -> code fills the Barcode field, no error.
+3. From the Inventory list, use the "Scan barcode..." box at the top
+   and scan/enter a code that already exists -> opens Stock
+   Adjustment for that item. Scan/enter a code that does not exist ->
+   opens Tambah Inventori Baru with that code pre-filled.
+4. Save a new/edited item -> returns to the Inventory list (not a
+   blank page).
+5. POS > Riwayat (history) / reprint / void invoice should work again.

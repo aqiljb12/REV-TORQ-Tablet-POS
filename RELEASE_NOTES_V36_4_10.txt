@@ -1,0 +1,23 @@
+REV TORQ V36.4.10
+================
+1. Override Mode is now an explicit Admin navigation action.
+   - Removed the old 5-tap / hidden-logo trigger.
+   - Override state remains session-only.
+2. POS cashier opening float is labelled MODAL PERMULAAN.
+   - Uses existing Supabase rt_cash_open / cash_drawers.
+3. Added TUTUP BUKU HARIAN.
+   - Shows today's transactions, sales total, payment breakdown,
+     opening float, cash in/out and expected cash.
+   - Final close uses existing rt_cash_close after physical cash count.
+4. No database reset. No Dyno added.
+5. Original POS / Job Card / Inventory files are preserved.
+
+V36.4.12 — POS Lite / Report schema fix
+- Fixed report crash caused by selecting invoices.payment_method (column does not exist).
+- Payment methods are now read from payments.payment_method.
+- Added safe expense-query fallback for older expense schemas.
+- Supplier tile now opens the existing GRN workflow so stock is actually updated.
+- Added Money Out history.
+- Added month navigation for Money Out and Reports.
+- Enabled the existing cashier Daily Close module in the build.
+- No database reset or schema destructive migration included.
